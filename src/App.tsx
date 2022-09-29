@@ -1,24 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import TodoItem from "./Todo";
+import { useAxios } from "./axios.hook";
 
 function App() {
+  const { loading, todos, error } = useAxios("/todos");
+  useEffect(() => {
+    console.log({ todos });
+  }, [todos]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="todo" data-testid="todos">
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
     </div>
   );
 }
